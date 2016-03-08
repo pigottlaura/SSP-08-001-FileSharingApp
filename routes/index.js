@@ -35,9 +35,15 @@ router.get("/delete/:id", function(req, res, next){
                 console.log("File Deleted");
             });
             allFiles.splice(i, 1);
+            break;
         }
     }
     res.redirect("/files");
+});
+
+router.get("/fileUploads/:filename", function(req, res, next){
+    console.log("User is downloading file");
+    res.download("./fileUploads/" + req.params.filename);
 });
 
 module.exports = router;

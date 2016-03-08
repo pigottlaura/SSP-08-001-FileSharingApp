@@ -11,7 +11,8 @@ block content
         div.col-xs-12
     -for(var i = 0; i < values.length; i++)
         div.row
-            div.col-xs-8 #{values[i].file.originalname} 
+            div.col-xs-8
+                a(href='/fileUploads/#{values[i].file.filename}') #{values[i].file.originalname} 
             div.col-xs-2 #{values[i].file.size} bytes
             div.col-xs-2 
                 a(href='/delete/#{values[i]._id}') Delete
