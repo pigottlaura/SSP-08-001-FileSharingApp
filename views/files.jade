@@ -1,19 +1,29 @@
 extends layout
 
 block content
-    -var values = allFiles;
+    div.row
+        div.col-xs-10 Welcome back #{user}
+        div.col-xs-2
+            a(href="/logout")
+                button Logout
     div.row
         div.col-xs-12
-            form(method="post" action="/upload" enctype="multipart/form-data")
+            form(method="post" action="files/upload" enctype="multipart/form-data")
                 input(type="file" name="theFile")
                 input(type="submit" name="submit" value="submit")
     div.row
-        div.col-xs-12
-    -for(var i = 0; i < values.length; i++)
+        div.col-xs-6 Filename
+        div.col-xs-2 Owner
+        div.col-xs-2 File Size
+        div.col-xs-2 Options
+        
+    -for(var i = 0; i < allFiles.length; i++)
         div.row
-            div.col-xs-8
-                a(href='/fileUploads/#{values[i].file.filename}') #{values[i].file.originalname} 
-            div.col-xs-2 #{values[i].file.size} bytes
+            div.col-xs-6
+                a(href='/fileUploads/#{allFiles[i].file.filename}') #{allFiles[i].file.originalname} 
+            div.col-xs-2 #{allFiles[i].owner}
+            div.col-xs-2 #{allFiles[i].file.size} bytes
             div.col-xs-2 
-                a(href='/delete/#{values[i]._id}') Delete
+                -if(allFiles[i].owner == user)
+                    a(href='files/delete/#{allFiles[i]._id}') Delete
 

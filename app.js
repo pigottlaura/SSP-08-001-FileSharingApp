@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var fs = require('fs');
 
+var session = require('express-session');
+
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         var pathName = './fileUploads/';
@@ -30,7 +32,7 @@ var storage = multer.diskStorage({
 });
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var files = require('./routes/files');
 
 var app = express();
 
@@ -38,6 +40,12 @@ var upload = multer({
     storage: storage
 });
 app.use("/", upload.any());
+
+app.use("/", session({
+    secret: "mySecretKey",
+    resave: false,
+    saveUninitialized: false
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -52,7 +60,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/', function(req, res, next){
+   if(req.session.username != null){
+       console.log("User is already logged in");
+       next();
+   } else {
+       console.log("This user is not logged in yet");
+       res.redirect("/");
+   }
+});
+app.use('/files', files);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
