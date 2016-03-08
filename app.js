@@ -6,26 +6,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var fs = require('fs');
-
 var session = require('express-session');
 
+var directoryPath = require("./additional/directory-path");
+
 var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        var pathName = './fileUploads/';
-        fs.exists(pathName, function (exists) {
-            if (!exists) {
-                fs.mkdir(pathName, function (err) {
-                    if(err){
-                        cb(err, pathName);
-                    } else {
-                        cb(null, pathName);
-                    }        
-                });
-            } else {
-                cb(null, pathName);
-            }
-        });
-    },
+    destination: directoryPath,
     filename: function (req, file, cb) {
         cb(null, Date.now() + "_" + file.originalname);
     }

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var directoryPath = require("../additional/directory-path");
 
 router.get('/', function(req, res, next) {
     if(req.session.username == null){
@@ -15,8 +16,8 @@ router.post("/", function(req, res, next){
 });
 
 router.get("/fileUploads/:filename", function(req, res, next){
-    console.log("User is downloading file");
-    res.download("./fileUploads/" + req.params.filename);
+    console.log("User is downloading the " + req.params.filename + " file");
+    res.download(directoryPath + req.params.filename);
 });
 
 router.get("/logout", function(req, res, next){

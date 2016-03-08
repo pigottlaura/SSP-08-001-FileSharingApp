@@ -2,13 +2,13 @@ var express = require('express');
 var router = express.Router();
 var allFiles = new Array();
 var fs = require("fs");
+var directoryPath = require("../additional/directory-path");
 
 router.get("/", function(req, res, next){
    res.render("files", {allFiles: allFiles, user: req.session.username});
 });
 
 router.post('/upload', function(req, res, next){
-    console.log("New file received" + req.files[0].originalname);
     allFiles.push({
         file: req.files[0],
         _id: Date.now(),
@@ -23,7 +23,7 @@ router.get("/delete/:id", function(req, res, next){
     for(var i = 0; i < allFiles.length; i++){
         
         if(req.params.id == allFiles[i]._id){          
-            fs.unlink("./fileUploads/" + allFiles[i].file.filename, function(err){
+            fs.unlink(directoryPath + allFiles[i].file.filename, function(err){
                 if(err){
                     console.log(err);
                 }

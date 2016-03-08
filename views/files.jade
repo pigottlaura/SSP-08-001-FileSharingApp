@@ -2,7 +2,8 @@ extends layout
 
 block content
     div.row
-        div.col-xs-10 Welcome back #{user}
+        div.col-xs-10 
+            h3 Welcome back #{user}
         div.col-xs-2
             a(href="/logout")
                 button Logout
@@ -10,19 +11,21 @@ block content
         div.col-xs-12
             form(method="post" action="files/upload" enctype="multipart/form-data")
                 input(type="file" name="theFile")
-                input(type="submit" name="submit" value="submit")
+                input(type="submit" name="submit" value="Upload File")
     div.row
-        div.col-xs-6 Filename
+        div.col-xs-4 Filename
         div.col-xs-2 Owner
         div.col-xs-2 File Size
+        div.col-xs-2 Type
         div.col-xs-2 Options
         
     -for(var i = 0; i < allFiles.length; i++)
         div.row
-            div.col-xs-6
+            div.col-xs-4
                 a(href='/fileUploads/#{allFiles[i].file.filename}') #{allFiles[i].file.originalname} 
             div.col-xs-2 #{allFiles[i].owner}
             div.col-xs-2 #{allFiles[i].file.size} bytes
+            div.col-xs-2 #{allFiles[i].file.mimetype}
             div.col-xs-2 
                 -if(allFiles[i].owner == user)
                     a(href='files/delete/#{allFiles[i]._id}') Delete
