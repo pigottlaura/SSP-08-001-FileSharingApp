@@ -12,6 +12,7 @@ router.get('/', function(req, res, next) {
 
 router.post("/", function(req, res, next){
     req.session.username = req.body.username;
+    console.log("User created - redirecting to files");
     res.redirect("/files");
 });
 

@@ -9,7 +9,7 @@ block content
                 button Logout
     div.row
         div.col-xs-12
-            form(method="post" action="files/upload" enctype="multipart/form-data")
+            form(id="uploadFile" method="post" action="files/upload" enctype="multipart/form-data")
                 input(type="file" name="theFile")
                 input(type="submit" name="submit" value="Upload File")
     div.row

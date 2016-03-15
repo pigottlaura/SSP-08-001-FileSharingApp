@@ -1,38 +1,59 @@
 var express = require('express');
 var router = express.Router();
-var allFiles = new Array();
 var fs = require("fs");
 var directoryPath = require("../additional/directory-path");
 
 router.get("/", function(req, res, next){
-   res.render("files", {allFiles: allFiles, user: req.session.username});
+    console.log("Getting files");
+    var db = req.db;
+    var filecollection = db.get("filecollection");
+    filecollection.find({}, {}, function(err, docs){
+        console.log("filecollection contains " + docs.length + "document/s");
+        res.render("files", {allFiles: docs, user: req.session.username});
+    });
 });
 
 router.post('/upload', function(req, res, next){
-    allFiles.push({
-        file: req.files[0],
-        _id: Date.now(),
-        owner: req.session.username
-    });
-    res.redirect("/files");
+    if(req.files[0] != undefined){
+        var db = req.db;
+        var filecollection = db.get("filecollection");
+        filecollection.insert({
+            "file": req.files[0],
+            "owner": req.session.username,
+            "uploadedAt" : new Date()
+        }, function (err, doc){
+            if(err){
+                console.log("File could not be stored to the database - " + err);
+            } else{
+                console.log("File successfully stored in the database");
+            }
+            res.redirect("/files");
+        });
+    } else {
+        res.redirect("/files");
+    }
 });
 
 router.get("/delete/:id", function(req, res, next){
-    console.log("Deleting file: " + req.params.id);
-    
-    for(var i = 0; i < allFiles.length; i++){
-        
-        if(req.params.id == allFiles[i]._id){          
-            fs.unlink(directoryPath + allFiles[i].file.filename, function(err){
+    var db = req.db;
+    var filecollection = db.get("filecollection");
+    var ObjectId = require('mongodb').ObjectID;
+    filecollection.findOne({"_id" : ObjectId(req.params.id)}, function(err, docs){
+        if(err){
+            console.log("Cannot find file to delete - " + err);
+        } else {
+            console.log("Successfully found file to delete - " + docs.file.filename);
+            
+            fs.unlink(directoryPath +  docs.file.filename, function(err){
                 if(err){
                     console.log(err);
+                } else {
+                    console.log("File Deleted");
                 }
-                console.log("File Deleted");
             });
-            allFiles.splice(i, 1);
-            break;
         }
-    }
+    });
+    filecollection.remove({"_id" : ObjectId(req.params.id)});
     res.redirect("/files");
 });
 

@@ -7,6 +7,9 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var fs = require('fs');
 var session = require('express-session');
+var mongo = require('mongodb');
+var monk = require('monk');
+var db = monk('localhost:27017/fileSharingApp');
 
 var directoryPath = require("./additional/directory-path");
 
@@ -45,8 +48,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
 app.use('/', routes);
-app.use('/', function(req, res, next){
+app.use('/files', function(req, res, next){
    if(req.session.username != null){
        console.log("User is already logged in");
        next();
@@ -55,6 +62,8 @@ app.use('/', function(req, res, next){
        res.redirect("/");
    }
 });
+
+console.log("about to enter file route");
 app.use('/files', files);
 
 // catch 404 and forward to error handler
