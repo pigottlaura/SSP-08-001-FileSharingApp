@@ -9,7 +9,9 @@ var fs = require('fs');
 var session = require('express-session');
 var mongo = require('mongodb');
 var monk = require('monk');
-var db = monk('localhost:27017/fileSharingApp');
+var connectionString = process.env.CUSTOMCONNSTR_mongoDB || "localhost:27017/fileSharingApp";
+
+var db = monk(connectionString);
 
 var directoryPath = require("./additional/directory-path");
 
