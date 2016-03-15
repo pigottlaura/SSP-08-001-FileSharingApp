@@ -8,7 +8,7 @@ router.get("/", function(req, res, next){
     var db = req.db;
     var filecollection = db.get("filecollection");
     filecollection.find({}, {}, function(err, docs){
-        console.log("filecollection contains " + docs.length + "document/s");
+        console.log("The database contains " + docs.length + " file document/s");
         res.render("files", {allFiles: docs, user: req.session.username});
     });
 });

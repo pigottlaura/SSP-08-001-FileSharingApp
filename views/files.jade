@@ -24,8 +24,22 @@ block content
             div.col-xs-4
                 a(href='/fileUploads/#{allFiles[i].file.filename}') #{allFiles[i].file.originalname} 
             div.col-xs-2 #{allFiles[i].owner}
-            div.col-xs-2 #{allFiles[i].file.size} bytes
-            div.col-xs-2 #{allFiles[i].file.mimetype}
+            -var bFileSize = parseInt(allFiles[i].file.size)
+            if bFileSize <= 1024
+                div.col-xs-2 #{bFileSize}
+                    | bytes
+            else if bFileSize <= (1024 * 1024)
+                -var kbFileSize = Math.round(parseInt(allFiles[i].file.size)/1024)
+                div.col-xs-2 #{kbFileSize}
+                    | KB
+            else
+                -var mbFileSize = (parseInt(allFiles[i].file.size)/1024/1024).toFixed(2)
+                div.col-xs-2 #{mbFileSize}
+                    | MB
+            -var fileType = allFiles[i].file.mimetype.split("/")[0];
+            -var fileExt = allFiles[i].file.originalname.split(".")[1].toLowerCase();
+            div.col-xs-2 #{fileType}
+                | (.#{fileExt})
             div.col-xs-2 
                 -if(allFiles[i].owner == user)
                     a(href='files/delete/#{allFiles[i]._id}') Delete
